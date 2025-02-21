@@ -6,6 +6,7 @@ import com.coderstack.bankingapp.repository.UserRepository;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class LoginController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Map<String, Object>> authentication(Login login) {
+    public ResponseEntity<Map<String, Object>> authentication(@RequestBody Login login) {
         Map<String, Object> response = new HashMap<>();
         if (login == null) {
             response.put("error", "invalid login");
@@ -36,13 +37,18 @@ public class LoginController {
         }
 
         Optional<User> n=userRepository.findByEmail(login.email);
-//        if(n.isPresent()) {
-//            if(n.get)
-//        }
-
-
-
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+       if(n.isPresent()) {
+           System.out.println(login.password);
+           if(n.get().verifyPassword(login.password)){
+               return new ResponseEntity<>(response, HttpStatus.OK);
+           }else{
+            response.put("error", "invalid username     and password");
+            return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+           }
+        }else{
+            response.put("error", "user not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
+    
 }

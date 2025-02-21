@@ -17,6 +17,10 @@ public class User {
 
     private String password;
 
+    public boolean verifyPassword(String password){
+        return password.equals(this.password);
+    }
+
     public Integer getId() {
         return id;
     }
