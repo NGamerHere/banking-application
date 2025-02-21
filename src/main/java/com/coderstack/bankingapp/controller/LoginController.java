@@ -1,5 +1,48 @@
 package com.coderstack.bankingapp.controller;
 
+import com.coderstack.bankingapp.Entity.Login;
+import com.coderstack.bankingapp.Entity.User;
+import com.coderstack.bankingapp.repository.UserRepository;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+
+@Controller
+@RequestMapping("/login")
 public class LoginController {
+
+
+    private final UserRepository userRepository;
+
+    public LoginController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Map<String, Object>> authentication(Login login) {
+        Map<String, Object> response = new HashMap<>();
+        if (login == null) {
+            response.put("error", "invalid login");
+            response.put("status", "failure");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<User> n=userRepository.findByEmail(login.email);
+//        if(n.isPresent()) {
+//            if(n.get)
+//        }
+
+
+
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
