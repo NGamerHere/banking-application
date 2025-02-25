@@ -2,7 +2,6 @@ package com.coderstack.bankingapp.controller;
 
 import com.coderstack.bankingapp.Entity.User;
 import com.coderstack.bankingapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +14,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping(path="/demo")
 public class MainController {
-    @Autowired
 
     private UserRepository userRepository;
 

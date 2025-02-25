@@ -38,11 +38,10 @@ public class LoginController {
 
         Optional<User> n=userRepository.findByEmail(login.email);
        if(n.isPresent()) {
-           System.out.println(login.password);
            if(n.get().verifyPassword(login.password)){
                return new ResponseEntity<>(response, HttpStatus.OK);
            }else{
-            response.put("error", "invalid username     and password");
+            response.put("error", "invalid username and password");
             return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
            }
         }else{
