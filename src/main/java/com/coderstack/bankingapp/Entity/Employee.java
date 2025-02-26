@@ -67,11 +67,12 @@ public class Employee {
         this.employeeAddress = employeeAddress;
     }
 
-    public LocalDate getDateOfBirth() {
+    public LocalDate getEmployeeDateOfBirth() {
         return employeeDateOfBirth;
     }
-
-    public void setDateOfBirth(LocalDate employeeDateOfBirth){
-        this.employeeDateOfBirth=employeeDateOfBirth;
+    
+    public void setEmployeeDateOfBirth(LocalDate employeeDateOfBirth) {
+        this.employeeDateOfBirth = employeeDateOfBirth;
     }
+    
 }
