@@ -4,34 +4,31 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenHandle { 
-    public static final long TOKEN_VALIDITY = 10 * 60 * 60 * 1000; // 10 hours in milliseconds
+    public static final long TOKEN_VALIDITY = 10 * 60 * 60 * 1000;
 
-    @Value("${jwt.secret}") 
-    private String jwtSecret;  // Secret key from application.properties
+    final private Key signingKey;
 
-    private Key signingKey;  // Store decoded key to avoid redundant decoding
-
-    @PostConstruct
-    public void init() {
-        if (jwtSecret == null || jwtSecret.isBlank()) {
+    @Autowired
+    public JwtTokenHandle(@Value("${jwt.secret}") String key){
+        if (key == null || key.isBlank()) {
             throw new IllegalStateException("JWT secret key is missing. Check application.properties!");
         }
-        this.signingKey = decodeSecretKey(jwtSecret);
+        this.signingKey = decodeSecretKey(key);
     }
 
-    // ✅ Generate JWT Token
+
     public String generateToken(Map<String, Object> userData) {
         return Jwts.builder()
                 .setClaims(userData)  
@@ -41,7 +38,7 @@ public class JwtTokenHandle {
                 .compact();
     }
 
-    // ✅ Retrieve Data from JWT Token
+
     public Claims getTokenData(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(signingKey) 
@@ -50,18 +47,18 @@ public class JwtTokenHandle {
                 .getBody(); 
     }
 
-    // ✅ Validate JWT Token
+
     public boolean validateToken(String token, String username) {
         final String extractedUsername = getTokenData(token).get("username", String.class);
         return (extractedUsername != null && extractedUsername.equals(username) && !isTokenExpired(token));
     }
 
-    // ✅ Check Token Expiry
-    private boolean isTokenExpired(String token) {
+
+    public boolean isTokenExpired(String token) {
         return getTokenData(token).getExpiration().before(new Date());
     }
 
-    // ✅ Decode Secret Key Once
+
     private Key decodeSecretKey(String secret) {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
